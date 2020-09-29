@@ -1,0 +1,19 @@
+version: '3.3'
+services:
+  sonarqube:
+    image: sonarqube:latest
+    restart: unless-stopped
+    ports:
+      - '5090:9000'
+    expose:
+      - '5090'
+    volumes:
+    - ./volume_mount/sonarqube_data:/opt/sonarqube/data
+    - ./volume_mount/sonarqube_extensions:/opt/sonarqube/extensions
+    - ./volume_mount/sonarqube_logs:/opt/sonarqube/logs
+
+
+networks: 
+  default:
+    external: 
+      name: common

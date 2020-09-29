@@ -1,0 +1,32 @@
+version: '3.3'
+services:
+  docker-registry:
+    image: registry:latest
+    restart: unless-stopped
+    environment:
+      DOCKER_REGISTRY_URL: https://docker-registry:5000
+      REGISTRY_HTTP_TLS_CERTIFICATE: /var/lib/registry/certs/domain.crt
+      REGISTRY_HTTP_TLS_KEY: /var/lib/registry/certs/domain.key    
+    ports:
+      - '5000:5000'
+      - '5443:443'
+    expose:
+      - '5000'
+      - '5443'
+    volumes:
+      - ./volume_mount/data:/var/lib/registry
+
+  docker-registry-browser:
+    environment:
+      DOCKER_REGISTRY_URL: https://docker-registry:5000
+      SSL_CERT_PATH: /var/lib/registry/certs/domain.crt
+      SSL_KEY_PATH: /var/lib/registry/certs/domain.key
+      NO_SSL_VERIFICATION: "true"
+    image: klausmeyer/docker-registry-browser:latest
+    restart: unless-stopped
+    ports:
+      - '3000:8080'
+    expose:
+      - '3000'
+    volumes:
+      - ./volume_mount/data:/var/lib/registry

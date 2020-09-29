@@ -1,0 +1,18 @@
+version: '3.3'
+services:
+  jenkins:
+    image: gitlab/gitlab-ce:latest
+    restart: unless-stopped
+    ports:
+      - '5443:443'
+      - '5084:80'
+      - '5022:22'
+    expose:
+      - '5443'
+      - '5084'
+      - '5022'
+    volumes:
+      - ./volume_mount/config:/etc/gitlab:Z
+      - ./volume_mount/logs:/var/log/gitlab:Z
+      - ./volume_mount/data:/var/opt/gitlab:Z
+ 

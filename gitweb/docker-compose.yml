@@ -1,0 +1,17 @@
+version: '3.3'
+services:
+  gitweb:
+    image: fraoustin/gitweb:latest
+    restart: unless-stopped
+    environment:
+      GITPROJECT: test
+      GITUSER: alpine
+      GITPASSWORD: alpine
+    ports:
+      - '2280:80'
+      - '2222:22'
+    expose:
+      - '2280'
+      - '2222'
+    volumes:
+      - ./volume_mount/data:/var/lib/git

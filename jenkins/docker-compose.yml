@@ -1,0 +1,19 @@
+version: '3.3'
+services:
+  jenkins:
+    image: jenkins/jenkins:lts
+    restart: unless-stopped
+    ports:
+      - '5080:8080'
+      - '50000:50000'
+    expose:
+      - '5080'
+      - '50000'
+    volumes:
+      - ./volume_mount/data:/var/jenkins_home
+
+
+networks: 
+  default:
+    external: 
+      name: registry_default

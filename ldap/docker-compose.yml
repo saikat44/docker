@@ -1,0 +1,15 @@
+version: '3.3'
+services:
+  ldap-auth:
+    image: linuxserver/ldap-auth
+    container_name: ldap-auth
+    ports:
+      - 8888:8888
+      - 9099:9000
+
+
+
+networks: 
+  default:
+    external: 
+      name: registry_default

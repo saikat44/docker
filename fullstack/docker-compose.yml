@@ -1,0 +1,138 @@
+version: '3.3' # specify docker-compose version
+
+# Define the services/containers to be run
+services:
+  cassandra:
+    image: cassandra
+    ports:
+    # 7000: intra-node communication
+    # 7001: TLS intra-node communication
+    # 7199: JMX
+    # 9042: CQL
+    # 9160: thrift service
+    - "9042:9042"
+    volumes:
+    - cassandradata:/var/lib/cassandra
+    
+  redis:
+    image: redis
+    ports:
+      - "6379:6379"
+
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    restart: always
+    environment:
+    - REDIS_HOSTS=local:redis:6379
+    ports:
+    - "6380:8081"
+
+
+  postgres:
+    image: postgres
+    ports:
+      - "5432:5432"
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: test
+      POSTGRES_USER: user
+    volumes:
+      - ./data/postgresql:/var/lib/postgresql
+      - ./pg-initdb.d:/docker-entrypoint-initdb.d
+      
+  mysql:
+    image: mysql:5.7
+    ports:
+      - "3306:3306"
+ #   command: --default-authentication-plugin=mysql_native_password  
+    environment:
+      MYSQL_ROOT_PASSWORD: mysecret
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+      MYSQL_DATABASE: test
+    volumes:
+ #     - ./data/mysql:/var/lib/mysql    
+      - ./mysql-initdb.d:/docker-entrypoint-initdb.d
+      
+  phpmyadmin:
+      image: phpmyadmin/phpmyadmin
+      container_name: phpmyadmin
+      environment:
+       - PMA_ARBITRARY=1
+      restart: always
+      ports:
+       - 3307:80
+      volumes:
+       - /sessions
+
+  mongodb: 
+    image: mongo 
+    volumes:
+      - ./mongodata:/data/db
+    ports:
+      - "27017:27017"
+#    command: --smallfiles 
+#   command: --smallfiles --rest --auth  // if there is a password set in mongo.
+
+  mongo-express:
+      image: mongo-express
+      container_name: mongo-express
+      restart: always
+      environment:
+        ME_CONFIG_MONGODB_SERVER: mongodb
+      ports:
+       - 27018:8081
+
+
+
+  couchbase:
+    image: couchbase
+    ports:
+      - "8091:8091"
+      - "8092:8092"
+      - "8093:8093"
+      - "8094:8094"
+      - "11210:11210"
+    volumes:
+      - couchbasedata:/opt/couchbase/var
+      
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.6.1
+    environment:
+      - discovery.type=single-node
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ports:
+      - 9200:9200
+      - 9300:9300
+    volumes:
+      - esdata1:/usr/share/elasticsearch/data
+      
+  neo4j:
+    image: neo4j/neo4j-experimental:4.0.0-rc01   # not release yet.
+    environment:
+      - "NEO4J_AUTH=neo4j/test"
+      - "NEO4J_ACCEPT_LICENSE_AGREEMENT=yes"
+    ports:
+      - 7687:7687 
+      - 7474:7474 
+
+  # no entrypoint-init scripts, see: https://github.com/Microsoft/mssql-docker/issues/11 
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    environment: 
+      - SA_PASSWORD=p@ssw0rd
+      - ACCEPT_EULA=Y
+    ports:
+      - 1433:1433
+    
+volumes:
+  mongodata:  
+#    driver: local-persist
+#    driver_opts:
+#      mountpoint: ./data  
+  cassandradata: 
+  couchbasedata: 
+  esdata1:
+    driver: local
+       
