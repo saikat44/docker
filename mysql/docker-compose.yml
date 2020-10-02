@@ -20,6 +20,17 @@ services:
       # Where our data will be persisted
     volumes:
       - ./volume_mount/mysql:/var/lib/mysql
+
+  phpmyadmin:
+      image: phpmyadmin/phpmyadmin
+      container_name: phpmyadmin
+      environment:
+       - PMA_ARBITRARY=1
+      restart: always
+      ports:
+       - 3307:80
+      volumes:
+       - ./volume_mount/phpmyadmin:/sessions      
 # Names our volume
 volumes:
   my-db:
