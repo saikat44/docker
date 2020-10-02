@@ -5,11 +5,13 @@ services:
     image: portainer/portainer:latest
     restart: always
     container_name: portainer
+    environment:
+      - no-auth
     ports:
       - "9000:9000"
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - portainer:/data
+      - ./volume_mount:/var/run/docker.sock
+      - ./volume_mount:/data
 
 volumes:
   portainer:
