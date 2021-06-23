@@ -1,0 +1,13 @@
+version: '3.3'
+services:
+  swagger-editor:
+    image: swaggerapi/swagger-editor:latest
+    restart: always
+    ports:
+      # <Port exposed> : < MySQL Port running inside container>
+      - '9080:8080'
+    expose:
+      - '9980'
+
+
+
