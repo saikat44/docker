@@ -1,0 +1,12 @@
+version: '3.3'
+services:
+  mini-paint:
+    image: saikat44/mini-paint:latest
+    restart: always
+    ports:
+      - '2346:8080'
+    expose:
+      - '2346'
+
+
+
